@@ -1,0 +1,10 @@
+[project]
+name = "vcloud-portal"
+version = "1.0.0"
+description = "vCloud Director Portal"
+authors = ["Marco Altamura <m.altamura@me.com>"]
+
+[project.dependencies]
+flask = "^3.0"
+requests = "^2.31"
+urllib3 = "^2.2.0"

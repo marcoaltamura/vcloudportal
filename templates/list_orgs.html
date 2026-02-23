@@ -1,0 +1,32 @@
+{% include 'html_header.html' %}
+<h1>Organizzazioni (Clienti)</h1>
+<table class="table table-sm table-hover">
+    <thead>
+        <th class="col">Nome</th>
+        <th class="col">Nome visualizzato</th>
+        <th class="col">Descrizione</th>
+        <th class="col">Metadata</th>
+        <th class="col">Accedi</th>
+    </thead>
+    <tbody>
+        {% for item in orgs %}
+        <tr>
+            <td>{{item['name']}}</td>
+            <td>{{item['displayName']}}</td>
+            <td>{{item['description']}}</td>
+            <td>
+                {% for tag in item['metadata'].items() %}
+                <span class="badge text-bg-primary">{{tag[0]}}</span>
+                <span class="badge text-bg-secondary">{{tag[1]}}</span><br>
+                {% endfor %}
+            </td>
+            <td>
+                <form action="/org-{{item['id']}}">
+                    <input type="submit" class="btn btn-secondary" value='Accedi' />
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% include 'html_footer.html' %}

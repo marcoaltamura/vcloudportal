@@ -1,0 +1,27 @@
+{% include 'html_header.html' %}
+<h1>Virtual Data Center {{vdc_name}}</h1>
+<h2>vApps</h2>
+
+<table class="table table-sm table-hover">
+  <thead>
+    <th>ID risorsa</th>
+    <th>Nome</th>
+    <th>Accedi</th>
+  </thead>
+  <tbody>
+    {% for item in resources %}
+    <tr>
+      <td>{{item['id'].split(':')[-1]}}</td>
+      <td>{{item['name']}}</td>
+      <td>
+        <form action="/org-{{org_id}}/vdc-{{vdc_id}}/vapp-{{item['id']}}"><input type='submit'
+            class="btn btn-secondary" value="Accedi"></form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p>
+<form action="/org-{{org_id}}"><button id="back_spin" type="submit" class="btn btn-secondary">Indietro</button></form>
+</p>
+{% include 'html_footer.html' %}

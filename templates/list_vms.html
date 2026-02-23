@@ -1,0 +1,33 @@
+{% include 'html_header.html' %}
+<h1>vApp {{vapp_name}}</h1>
+<h2>VMs</h2>
+<table class="table table-sm table-hover">
+  <thead>
+    <th>Nome</th>
+    <th>Descrizione</th>
+    <th>Metadata</th>
+    <th>Accedi</th>
+  </thead>
+  <tbody>
+    {% for item in vms %}
+    <tr>
+      <td>{{item['name']}}</td>
+      <td>{{item['description']}}</td>
+      <td>
+        {% for tag in item['metadata'].items() %}
+        <span class="badge text-bg-primary">{{tag[0]}}</span>
+        <span class="badge text-bg-secondary">{{tag[1]}}</span><br>
+        {% endfor %}
+      </td>
+      <td>
+        <form action="/org-{{org_id}}/vdc-{{vdc_id}}/vapp-{{vapp_id}}/vm-{{item['id']}}"><input type='submit' class="btn btn-secondary" value="Accedi">
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p>
+<form action="/org-{{org_id}}/vdc-{{vdc_id}}"><button id="back_spin" type="submit" class="btn btn-secondary">Indietro</button></form>
+</p>
+{% include 'html_footer.html' %}

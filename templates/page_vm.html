@@ -1,0 +1,95 @@
+{% include 'html_header.html' %}
+<script type="text/javascript" src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/static/js/wmks.min-2.1.0.js"></script>
+
+<h1>vApp </h1>
+<h2>Virtual Machine {{vm_name}}</h2>
+
+<p>Descrizione: {{description}}</p>
+<p>Stato macchina: <strong><span
+            class="{% if status == 'Online' %}text-success{% else %}text-danger{% endif %}">{{status}}</span></strong>
+</p>
+<p>
+Tags: 
+{{metadata}}
+</p>
+<form action="">
+
+    {% if status == 'Online' %}
+    <input class="btn btn-danger" type="submit" value="Riavvio" onClick='vmReboot()'>
+    <input class="btn btn-danger" type="submit" value="Spegnimento" onClick='vmPowerOff()'>
+    <p></p>
+
+    <div id="wmksContainer" style="width:1024px;height:768px;border-style:solid;position: relative;pointer-events:none;"
+        class="text-center mx-auto"></div>
+
+    <script>
+
+        $(function () {
+
+            var baseurl_ws = "wss://{{data['host']}}/{{data['port']}};"
+            var ticket = "{{data['ticket']}}";
+
+            var wmks = WMKS.createWMKS("wmksContainer", { VCDProxyHandshakeVmxPath: "", enableUint8Utf8: true })
+                .register(WMKS.CONST.Events.CONNECTION_STATE_CHANGE, function (event, data) {
+                    console.log(data);
+
+                    if (data.state == WMKS.CONST.ConnectionState.CONNECTED) {
+                        console.log("connection state change : connected");
+                    }
+                });
+
+
+            wmks.connect(baseurl_ws + ticket);
+            $("wmksContainer").off('click');
+            wmks.disableInputDevice(WMKS.CONST.InputDeviceType.KEYBOARD);
+
+        });
+    </script>
+
+    {% else %}
+    <input class="btn btn-danger" type="submit" value="Accensione" onClick='vmPowerOn()'>
+    {% endif %}
+
+
+</form>
+</p>
+
+<p>
+<form action="/org-{{org_id}}/vdc-{{vdc_id}}/vapp-{{vapp_id}}"><button id="back_spin" type="submit" class="btn btn-secondary">Indietro</button></form>
+</p>
+<script>
+    function vmReboot() {
+        var vmid = '{{vm_id}}';
+        if (confirm('Confermi di riavviare la macchina?')) {
+            fetch('/org-{{org_id}}/vdc-{{vdc_id}}/vapp-{{vapp_id}}/vm-{{vm_id}}/reboot');
+            alert('Macchina in riavvio...');
+        }
+        else {
+            alert("Annullato");
+        }
+    }
+    function vmPowerOn() {
+        var vmid = '{{vm_id}}';
+        if (confirm('Confermi di avviare la macchina?')) {
+            fetch('/org-{{org_id}}/vdc-{{vdc_id}}/vapp-{{vapp_id}}/vm-{{vm_id}}/poweron');
+            alert('Macchina in avvio...');
+        }
+        else {
+            alert("Annullato");
+        }
+    }
+    function vmPowerOff() {
+        var vmid = '{{vm_id}}';
+        if (confirm('Confermi di spegnere la macchina?')) {
+            fetch('/org-{{org_id}}/vdc-{{vdc_id}}/vapp-{{vapp_id}}/vm-{{vm_id}}/poweroff');
+            alert('Macchina in spegnimento...');
+        }
+        else {
+            alert("Annullato");
+        }
+    }
+
+</script>
+{% include 'html_footer.html' %}
